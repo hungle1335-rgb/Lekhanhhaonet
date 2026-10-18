@@ -1,10 +1,172 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Website của tôi</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopLink Activation</title>
+    <style>
+        /* Toàn màn hình với nền tối chuyển màu dịu */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at 80% 20%, #201314 0%, #0d0d11 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+        }
+
+        /* Hộp thoại trung tâm */
+        .activation-card {
+            background-color: #16151a;
+            border: 1px solid #232228;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            padding: 35px 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* Logo ShopLink */
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, #ffffff 50%, #ff5252 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Vùng chứa nội dung bên trong */
+        .inner-box {
+            border: 1px solid #252024;
+            background-color: #111013;
+            border-radius: 12px;
+            padding: 24px 20px;
+        }
+
+        /* Nhãn CHƯA CẤP PHÉP */
+        .status-badge {
+            display: inline-block;
+            color: #ff4444;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 1px dashed #ff4444;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+            background-color: rgba(255, 68, 68, 0.05);
+        }
+
+        /* Đoạn văn bản mô tả ngắn */
+        .description {
+            font-size: 13px;
+            color: #8c8a94;
+            line-height: 1.6;
+            margin: 0 0 25px 0;
+            text-align: left;
+        }
+
+        /* Tiêu đề vùng nhập Key */
+        .input-label {
+            font-size: 13px;
+            color: #e2e1e6;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-label span {
+            margin-right: 6px;
+        }
+
+        /* Hàng chứa ô nhập và nút bấm */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Ô nhập Key */
+        .key-input {
+            flex: 1;
+            background-color: #0d0d0f;
+            border: 1px solid #2b2a33;
+            border-radius: 6px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .key-input:focus {
+            border-color: #ff5252;
+        }
+
+        .key-input::placeholder {
+            color: #4a4950;
+        }
+
+        /* Nút Kích Hoạt với hiệu ứng chuyển màu rực rỡ */
+        .btn-activate {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 12px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 15px rgba(229, 46, 113, 0.3);
+        }
+
+        .btn-activate:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với website trên GitHub Pages!</h1>
+
+    <div class="activation-card">
+        <!-- Tên ứng dụng -->
+        <div class="logo">ShopLink</div>
+        
+        <!-- Hộp nội dung -->
+        <div class="inner-box">
+            <div class="status-badge">CHƯA CẤP PHÉP</div>
+            
+            <p class="description">
+                Thiết bị của bạn chưa được cấp quyền truy cập. Bạn có thể kích hoạt nhanh bằng <strong>Mã Key</strong> hoặc gửi ID thiết bị cho Admin.
+            </p>
+            
+            <!-- Nhãn nhập liệu -->
+            <div class="input-label">
+                <span>🔑</span> Nhập Mã Key Kích Hoạt:
+            </div>
+            
+            <!-- Ô nhập liệu và nút bấm -->
+            <div class="input-group">
+                <input type="text" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
+                <button class="btn-activate">
+                    ⚡ Kích Hoạt
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
