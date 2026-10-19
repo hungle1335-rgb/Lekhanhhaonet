@@ -12,6 +12,19 @@
             position: relative; overflow-x: hidden; justify-content: center;
         }
         
+        /* KHU VỰC BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI MÀN HÌNH */
+        .secret-bottom-right-trigger {
+            position: fixed; 
+            bottom: 0; 
+            right: 0; 
+            width: 80px; 
+            height: 80px; 
+            background: transparent; 
+            z-index: 9999; 
+            cursor: pointer; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
         /* ================= GIAO DIỆN MÀN HÌNH KÍCH HOẠT ================= */
         .activation-card {
             background-color: #16151a; border: 1px solid #232228; border-radius: 16px; width: 100%; max-width: 440px; padding: 35px 25px;
@@ -37,22 +50,19 @@
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
 
-        /* ================= GIAO DIỆN TRANG TIKTOK (MẶC ĐỊNH ẨN) ================= */
+        /* ================= GIAO DIỆN TRANG TIKTOK ================= */
         .tiktok-main-page {
             display: none; width: 100%; max-width: 480px; background-color: #111013; 
             border-radius: 16px; border: 1px solid #1c1b22; padding: 15px; box-sizing: border-box;
         }
-        /* Thanh tiêu đề header */
         .tiktok-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .tiktok-title { font-size: 20px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
         .live-tag { background-color: #ff0050; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
         .live-count { font-size: 13px; color: #ffd700; font-weight: bold; }
         
-        /* Ô tìm kiếm link */
         .search-box-container { margin-bottom: 15px; }
         .search-input { width: 100%; background-color: #1a191f; border: 1px solid #2b2933; padding: 12px; border-radius: 8px; color: #fff; font-size: 13px; box-sizing: border-box; outline: none; }
         
-        /* Hàng Menu chuyển tab (Rương lớn, Rương nhỏ, Rương treo...) */
         .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
         .tabs-container::-webkit-scrollbar { height: 0px; }
         .tab-item {
@@ -65,7 +75,6 @@
         .circle-icon { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #555; }
         .tab-item.active .circle-icon { border-color: #ff8a00; background-color: #ff8a00; }
 
-        /* VÙNG ĐỂ TRỐNG HOÀN TOÀN THEO YÊU CẦU CỦA BẠN */
         .empty-content-area {
             border: 1px dashed #232229; border-radius: 12px; min-height: 250px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -85,14 +94,12 @@
         .action-container { display: flex; gap: 15px; }
         .copy-btn { color: #00e676; font-weight: bold; cursor: pointer; padding: 5px; }
         .delete-btn { color: #ff4444; font-weight: bold; cursor: pointer; padding: 5px; }
-
-        /* KHU VỰC BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI MÀN HÌNH */
-        .secret-bottom-right-trigger {
-            position: fixed; bottom: 0; right: 0; width: 80px; height: 80px; background: transparent; z-index: 9999; cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
     </style>
 </head>
 <body>
+
+    <!-- THẺ VÙNG BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI (ĐÃ ĐƯỢC THÊM LẠI ĐẦY ĐỦ) -->
+    <div class="secret-bottom-right-trigger" onclick="toggleAdminPanel()"></div>
 
     <!-- 1. GIAO DIỆN MÀN HÌNH KÍCH HOẠT CHÍNH -->
     <div id="activationPage" class="activation-card">
@@ -110,21 +117,18 @@
         </div>
     </div>
 
-    <!-- 2. GIAO DIỆN TRANG TIKTOK CHÍNH (XUẤT HIỆN KHI NHẬP ĐÚNG KEY) -->
+    <!-- 2. GIAO DIỆN TRANG TIKTOK CHÍNH -->
     <div id="tiktokPage" class="tiktok-main-page">
-        <!-- Header -->
         <div class="tiktok-header">
             <span class="tiktok-title">Link TikTok</span>
             <span class="live-tag">● LIVE</span>
             <span class="live-count">277,068</span>
         </div>
         
-        <!-- Ô Tìm kiếm -->
         <div class="search-box-container">
             <input type="text" class="search-input" placeholder="Tìm kiếm link...">
         </div>
         
-        <!-- Tabs Thanh Danh Mục -->
         <div class="tabs-container">
             <div class="tab-item">
                 <div class="circle-icon"></div>
@@ -152,7 +156,6 @@
             </div>
         </div>
 
-        <!-- VÙNG ĐỂ TRỐNG HOÀN TOÀN THEO ĐÚNG YÊU CẦU -->
         <div class="empty-content-area">
             <span>Chưa có dữ liệu danh sách link hiển thị</span>
         </div>
@@ -171,5 +174,10 @@
         <div class="key-list" id="keyList"></div>
     </div>
 
-    <!-- KHU VỰC VÔ HÌNH GÓC DƯỚI BÊN PHẢI GỌI PANEL ADMIN -->
+    <script>
+        function getStoredKeys() {
+            const keys = localStorage.getItem('shoplink_final_v7');
+            return keys ? JSON.parse(keys) : [];
+        }
+
     
