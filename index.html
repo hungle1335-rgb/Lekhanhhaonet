@@ -20,10 +20,10 @@
             right: 0;
             width: 80px;
             height: 80px;
-            background: transparent; /* Hoàn toàn vô hình */
+            background: transparent;
             z-index: 9999;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent; /* Tắt vệt sáng màu xanh khi chạm trên điện thoại */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .activation-card {
@@ -36,11 +36,20 @@
             background: linear-gradient(to right, #ffffff 50%, #ff5252 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .inner-box { border: 1px solid #252024; background-color: #111013; border-radius: 12px; padding: 24px 20px; }
+        
+        /* Nhãn trạng thái lúc chưa cấp phép */
         .status-badge {
             display: inline-block; color: #ff4444; font-size: 11px; font-weight: bold; letter-spacing: 1px;
             border: 1px dashed #ff4444; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; background-color: rgba(255, 68, 68, 0.05);
         }
-        .status-badge.success { color: #00e676; border-color: #00e676; background-color: rgba(0, 230, 118, 0.05); }
+        
+        /* Nhãn trạng thái đổi sang màu xanh thành công */
+        .status-badge.success { 
+            color: #00e676; 
+            border-color: #00e676; 
+            background-color: rgba(0, 230, 118, 0.05); 
+        }
+
         .description { font-size: 13px; color: #8c8a94; line-height: 1.6; margin: 0 0 25px 0; text-align: left; }
         .input-label { font-size: 13px; color: #e2e1e6; text-align: left; margin-bottom: 8px; font-weight: 500; display: flex; align-items: center; }
         .input-group { display: flex; gap: 10px; align-items: center; }
@@ -62,7 +71,6 @@
         .key-list { margin-top: 15px; text-align: left; font-size: 13px; max-height: 150px; overflow-y: auto; background: #0d0d0f; padding: 10px; border-radius: 6px; }
         .key-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; align-items: center; }
         
-        /* CÁC NÚT TRÊN DANH SÁCH KEY */
         .action-container { display: flex; gap: 15px; }
         .copy-btn { color: #00e676; font-weight: bold; cursor: pointer; padding: 5px; }
         .delete-btn { color: #ff4444; font-weight: bold; cursor: pointer; padding: 5px; }
@@ -99,12 +107,12 @@
         <div class="key-list" id="keyList"></div>
     </div>
 
-    <!-- KHU VỰC VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI (THEO ẢNH BẠN KHOANH) -->
+    <!-- KHU VỰC VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI -->
     <div class="secret-bottom-right-trigger" onclick="toggleAdminPanel()"></div>
 
     <script>
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_v5');
+            const keys = localStorage.getItem('shoplink_redirect_v2');
             return keys ? JSON.parse(keys) : [];
         }
 
@@ -127,7 +135,7 @@
             if (currentKeys.includes(keyText)) return alert('Mã này đã trùng!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_final_v5', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_redirect_v2', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
         }
@@ -135,16 +143,14 @@
         function deleteKey(index) {
             let currentKeys = getStoredKeys();
             currentKeys.splice(index, 1);
-            localStorage.setItem('shoplink_final_v5', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_redirect_v2', JSON.stringify(currentKeys));
             renderKeyList();
         }
 
-        // TÍNH NĂNG SAO CHÉP MÃ KEY VÀO BỘ NHỚ ĐIỆN THOẠI
         function copyKey(text) {
             navigator.clipboard.writeText(text).then(function() {
                 alert('📋 Đã sao chép: ' + text);
             }).catch(function() {
-                // Phương án dự phòng tương thích mọi dòng máy cũ
                 const tempInput = document.createElement('input');
                 tempInput.value = text;
                 document.body.appendChild(tempInput);
@@ -174,20 +180,30 @@
             keyListDiv.innerHTML = html;
         }
 
+        // KIỂM TRA ĐỐI CHIẾU KEY CỦA NGƯỜI DÙNG
         function checkKey() {
             const userInput = document.getElementById('activationKeyInput').value.trim();
             const validKeys = getStoredKeys();
 
+            if (!userInput) return alert('Vui lòng nhập mã kích hoạt!');
+
             if (validKeys.includes(userInput)) {
-                document.getElementById('statusBadge').innerText = "ĐÃ KÍCH HOẠT";
-                document.getElementById('statusBadge').className = "status-badge success";
-                document.getElementById('descText').innerHTML = "Thiết bị đã được xác thực thành công!";
+                // 1. Thay đổi nhãn đỏ thành "THÀNH CÔNG - ĐANG CHUYỂN HƯỚNG" màu xanh lá ngay lập tức
+                const badge = document.getElementById('statusBadge');
+                badge.innerText = "THÀNH CÔNG - ĐANG CHUYỂN HƯỚNG";
+                badge.className = "status-badge success";
+                
+                // 2. Cập nhật dòng mô tả phía dưới
+                document.getElementById('descText').innerHTML = "Hệ thống đang chuyển hướng bạn, vui lòng đợi trong giây lát...";
                 document.getElementById('activationKeyInput').disabled = true;
-                alert('🎉 Kích hoạt thành công!');
+
+                // 3. Tự động chuyển hướng sau 2 giây (2000ms)
+                setTimeout(function() {
+                    window.location.href = "https://t.me"; // Bạn hãy sửa link trang đích của bạn tại đây
+                }, 2000);
+
             } else {
                 alert('❌ Mã kích hoạt không chính xác!');
             }
         }
-    </script>
-</body>
-</html>
+        
