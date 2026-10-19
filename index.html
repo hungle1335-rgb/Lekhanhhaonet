@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -50,7 +51,7 @@
             padding: 24px 20px;
         }
 
-        /* Nhãn CHƯA CẤP PHÉP */
+        /* Nhãn CHƯA CẤP PHÉP / ĐÃ KÍCH HOẠT */
         .status-badge {
             display: inline-block;
             color: #ff4444;
@@ -62,6 +63,12 @@
             border-radius: 20px;
             margin-bottom: 18px;
             background-color: rgba(255, 68, 68, 0.05);
+        }
+        
+        .status-badge.success {
+            color: #00e676;
+            border-color: #00e676;
+            background-color: rgba(0, 230, 118, 0.05);
         }
 
         /* Đoạn văn bản mô tả ngắn */
@@ -116,7 +123,7 @@
             color: #4a4950;
         }
 
-        /* Nút Kích Hoạt với hiệu ứng chuyển màu rực rỡ */
+        /* Nút Kích Hoạt */
         .btn-activate {
             background: linear-gradient(135deg, #ff8a00, #e52e71);
             border: none;
@@ -137,36 +144,168 @@
         .btn-activate:hover {
             opacity: 0.9;
         }
+
+        /* ================= VÙNG DÀNH CHO ADMIN ================= */
+        .admin-panel {
+            display: none; /* Mặc định ẩn đi hoàn toàn */
+            background-color: #1c1a22;
+            border: 1px solid #ff8a00;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 440px;
+            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        .admin-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ff8a00;
+            margin-bottom: 15px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+        }
+        .admin-btn {
+            background-color: #ff8a00;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .key-list {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 12px;
+            max-height: 100px;
+            overflow-y: auto;
+            background: #0d0d0f;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .key-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #222;
+        }
+        .delete-btn {
+            color: #ff4444;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
+    <!-- GIAO DIỆN NGƯỜI DÙNG CHÍNH -->
     <div class="activation-card">
-        <!-- Tên ứng dụng -->
         <div class="logo">ShopLink</div>
         
-        <!-- Hộp nội dung -->
         <div class="inner-box">
-            <div class="status-badge">CHƯA CẤP PHÉP</div>
+            <div id="statusBadge" class="status-badge">CHƯA CẤP PHÉP</div>
             
-            <p class="description">
+            <p id="descText" class="description">
                 Thiết bị của bạn chưa được cấp quyền truy cập. Bạn có thể kích hoạt nhanh bằng <strong>Mã Key</strong> hoặc gửi ID thiết bị cho Admin.
             </p>
             
-            <!-- Nhãn nhập liệu -->
             <div class="input-label">
                 <span>🔑</span> Nhập Mã Key Kích Hoạt:
             </div>
             
-            <!-- Ô nhập liệu và nút bấm -->
             <div class="input-group">
-                <input type="text" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
-                <button class="btn-activate">
+                <input type="text" id="activationKeyInput" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
+                <button onclick="checkKey()" class="btn-activate">
                     ⚡ Kích Hoạt
                 </button>
             </div>
         </div>
     </div>
 
-</body>
-</html>
+    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT CỦA ADMIN -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-title">
+            <span>🛠️ KHU VỰC ADMIN (BÍ MẬT)</span>
+            <span style="font-size: 11px; color:#8c8a94">Bấm Ctrl+Shift+A để ẩn</span>
+        </div>
+        <div class="input-group">
+            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key muốn tạo...">
+            <button onclick="generateKey()" class="admin-btn">Tạo Key</button>
+        </div>
+        <div class="key-list" id="keyList">
+            <strong>Danh sách Key đã tạo trên máy này:</strong>
+            <!-- Các key sẽ hiển thị ở đây -->
+        </div>
+    </div>
+
+    <script>
+        // --- 1. XỬ LÝ PHÍM TẮT BÍ MẬT ĐỂ MỞ PANEL ADMIN ---
+        // Nhấn tổ hợp phím Ctrl + Shift + A để Ẩn/Hiện khu vực tạo key
+        window.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+                e.preventDefault();
+                const adminPanel = document.getElementById('adminPanel');
+                if (adminPanel.style.display === 'block') {
+                    adminPanel.style.display = 'none';
+                } else {
+                    adminPanel.style.display = 'block';
+                    renderKeyList(); // Cập nhật lại danh sách key hiện tại
+                }
+            }
+        });
+
+        // --- 2. QUẢN LÝ KEY (DÀNH CHO ADMIN) ---
+        // Lấy danh sách key từ bộ nhớ máy (LocalStorage)
+        function getStoredKeys() {
+            const keys = localStorage.getItem('shoplink_admin_keys');
+            return keys ? JSON.parse(keys) : [];
+        }
+
+        // Thêm key mới vào bộ nhớ
+        function generateKey() {
+            const input = document.getElementById('newKeyInput');
+            const keyText = input.value.trim();
+            
+            if (!keyText) {
+                alert('Vui lòng nhập ký tự cho Key!');
+                return;
+            }
+
+            let currentKeys = getStoredKeys();
+            if (currentKeys.includes(keyText)) {
+                alert('Key này đã tồn tại rồi!');
+                return;
+            }
+
+            currentKeys.push(keyText);
+            localStorage.setItem('shoplink_admin_keys', JSON.stringify(currentKeys));
+            input.value = '';
+            renderKeyList();
+            alert(`Đã tạo thành công Key: ${keyText}`);
+        }
+
+        // Xóa key khỏi danh sách
+        function deleteKey(index) {
+            let currentKeys = getStoredKeys();
+            currentKeys.splice(index, 1);
+            localStorage.setItem('shoplink_admin_keys', JSON.stringify(currentKeys));
+            renderKeyList();
+        }
+
+        // Hiển thị danh sách các key đang có
+        function renderKeyList() {
+            const keyListDiv = document.getElementById('keyList');
+            const keys = getStoredKeys();
+            
+            let html = `<strong>Danh sách Key đã tạo trên máy này (${keys.length}):</strong>`;
+            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa có key nào được tạo.</div>';
+            
+            keys.forEach((key, index) => {
+                html += `
+                    <div class="key-item">
+                        <span>🔑 ${key}</span>
+                        <span class="delete-btn" onclick="deleteKey(${index})">Xóa</span>
+    
