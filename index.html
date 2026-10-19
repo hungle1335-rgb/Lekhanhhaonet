@@ -3,53 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ShopLink Activation Final</title>
+    <title>ShopLink & TikTok Management</title>
     <style>
         body {
-            margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh;
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
             background: radial-gradient(circle at 80% 20%, #201314 0%, #0d0d11 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; padding: 20px; box-sizing: border-box;
-            position: relative;
-            overflow-x: hidden;
+            position: relative; overflow-x: hidden; justify-content: center;
         }
         
-        /* KHU VỰC BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI MÀN HÌNH */
-        .secret-bottom-right-trigger {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            background: transparent;
-            z-index: 9999;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        /* ================= GIAO DIỆN MÀN HÌNH KÍCH HOẠT ================= */
         .activation-card {
             background-color: #16151a; border: 1px solid #232228; border-radius: 16px; width: 100%; max-width: 440px; padding: 35px 25px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box;
-            margin-bottom: 20px;
         }
         .logo {
             font-size: 28px; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 25px;
             background: linear-gradient(to right, #ffffff 50%, #ff5252 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .inner-box { border: 1px solid #252024; background-color: #111013; border-radius: 12px; padding: 24px 20px; }
-        
-        /* Nhãn trạng thái lúc chưa cấp phép */
         .status-badge {
             display: inline-block; color: #ff4444; font-size: 11px; font-weight: bold; letter-spacing: 1px;
             border: 1px dashed #ff4444; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; background-color: rgba(255, 68, 68, 0.05);
         }
-        
-        /* Nhãn trạng thái đổi sang màu xanh thành công */
-        .status-badge.success { 
-            color: #00e676; 
-            border-color: #00e676; 
-            background-color: rgba(0, 230, 118, 0.05); 
-        }
-
+        .status-badge.success { color: #00e676; border-color: #00e676; background-color: rgba(0, 230, 118, 0.05); }
         .description { font-size: 13px; color: #8c8a94; line-height: 1.6; margin: 0 0 25px 0; text-align: left; }
         .input-label { font-size: 13px; color: #e2e1e6; text-align: left; margin-bottom: 8px; font-weight: 500; display: flex; align-items: center; }
         .input-group { display: flex; gap: 10px; align-items: center; }
@@ -60,26 +37,65 @@
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
 
-        /* ================= KHU VỰC ADMIN ================= */
+        /* ================= GIAO DIỆN TRANG TIKTOK (MẶC ĐỊNH ẨN) ================= */
+        .tiktok-main-page {
+            display: none; width: 100%; max-width: 480px; background-color: #111013; 
+            border-radius: 16px; border: 1px solid #1c1b22; padding: 15px; box-sizing: border-box;
+        }
+        /* Thanh tiêu đề header */
+        .tiktok-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .tiktok-title { font-size: 20px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .live-tag { background-color: #ff0050; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .live-count { font-size: 13px; color: #ffd700; font-weight: bold; }
+        
+        /* Ô tìm kiếm link */
+        .search-box-container { margin-bottom: 15px; }
+        .search-input { width: 100%; background-color: #1a191f; border: 1px solid #2b2933; padding: 12px; border-radius: 8px; color: #fff; font-size: 13px; box-sizing: border-box; outline: none; }
+        
+        /* Hàng Menu chuyển tab (Rương lớn, Rương nhỏ, Rương treo...) */
+        .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
+        .tabs-container::-webkit-scrollbar { height: 0px; }
+        .tab-item {
+            flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: #1a191f; border: 1px solid #232229; border-radius: 10px; padding: 10px 14px; min-width: 60px; cursor: pointer;
+        }
+        .tab-item.active { border-color: #ff8a00; background-color: rgba(255, 138, 0, 0.05); }
+        .tab-title { font-size: 11px; color: #8c8a94; margin-top: 4px; text-align: center; }
+        .tab-item.active .tab-title { color: #ff8a00; font-weight: bold; }
+        .circle-icon { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #555; }
+        .tab-item.active .circle-icon { border-color: #ff8a00; background-color: #ff8a00; }
+
+        /* VÙNG ĐỂ TRỐNG HOÀN TOÀN THEO YÊU CẦU CỦA BẠN */
+        .empty-content-area {
+            border: 1px dashed #232229; border-radius: 12px; min-height: 250px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: #44434d; font-size: 13px; background-color: #0c0b0e;
+        }
+
+        /* ================= KHU VỰC ADMIN PANEL ================= */
         .admin-panel {
             display: none; background-color: #1c1a22; border: 1px solid #ff8a00; border-radius: 12px;
             width: 100%; max-width: 440px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
-            z-index: 9998;
+            margin-top: 20px; z-index: 9998;
         }
         .admin-title { font-size: 14px; font-weight: bold; color: #ff8a00; margin-bottom: 15px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .admin-btn { background-color: #ff8a00; border: none; color: #000; font-weight: bold; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
         .key-list { margin-top: 15px; text-align: left; font-size: 13px; max-height: 150px; overflow-y: auto; background: #0d0d0f; padding: 10px; border-radius: 6px; }
         .key-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; align-items: center; }
-        
         .action-container { display: flex; gap: 15px; }
         .copy-btn { color: #00e676; font-weight: bold; cursor: pointer; padding: 5px; }
         .delete-btn { color: #ff4444; font-weight: bold; cursor: pointer; padding: 5px; }
+
+        /* KHU VỰC BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI MÀN HÌNH */
+        .secret-bottom-right-trigger {
+            position: fixed; bottom: 0; right: 0; width: 80px; height: 80px; background: transparent; z-index: 9999; cursor: pointer; -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 <body>
 
-    <!-- GIAO DIỆN CHÍNH -->
-    <div class="activation-card">
+    <!-- 1. GIAO DIỆN MÀN HÌNH KÍCH HOẠT CHÍNH -->
+    <div id="activationPage" class="activation-card">
         <div class="logo">ShopLink</div>
         <div class="inner-box">
             <div id="statusBadge" class="status-badge">CHƯA CẤP PHÉP</div>
@@ -94,7 +110,55 @@
         </div>
     </div>
 
-    <!-- BẢNG TẠO KEY CỦA ADMIN -->
+    <!-- 2. GIAO DIỆN TRANG TIKTOK CHÍNH (XUẤT HIỆN KHI NHẬP ĐÚNG KEY) -->
+    <div id="tiktokPage" class="tiktok-main-page">
+        <!-- Header -->
+        <div class="tiktok-header">
+            <span class="tiktok-title">Link TikTok</span>
+            <span class="live-tag">● LIVE</span>
+            <span class="live-count">277,068</span>
+        </div>
+        
+        <!-- Ô Tìm kiếm -->
+        <div class="search-box-container">
+            <input type="text" class="search-input" placeholder="Tìm kiếm link...">
+        </div>
+        
+        <!-- Tabs Thanh Danh Mục -->
+        <div class="tabs-container">
+            <div class="tab-item">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Rương Lớn</div>
+            </div>
+            <div class="tab-item">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Rương Nhỏ</div>
+            </div>
+            <div class="tab-item active">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Rương Treo</div>
+            </div>
+            <div class="tab-item">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Rương Test</div>
+            </div>
+            <div class="tab-item">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Túi</div>
+            </div>
+            <div class="tab-item">
+                <div class="circle-icon"></div>
+                <div class="tab-title">Túi Xu</div>
+            </div>
+        </div>
+
+        <!-- VÙNG ĐỂ TRỐNG HOÀN TOÀN THEO ĐÚNG YÊU CẦU -->
+        <div class="empty-content-area">
+            <span>Chưa có dữ liệu danh sách link hiển thị</span>
+        </div>
+    </div>
+
+    <!-- 3. BẢNG QUẢN LÝ TẠO KEY ADMIN -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
             <span>🛠️ QUẢN LÝ KEY ADMIN</span>
@@ -107,103 +171,5 @@
         <div class="key-list" id="keyList"></div>
     </div>
 
-    <!-- KHU VỰC VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI -->
-    <div class="secret-bottom-right-trigger" onclick="toggleAdminPanel()"></div>
-
-    <script>
-        function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_redirect_v2');
-            return keys ? JSON.parse(keys) : [];
-        }
-
-        function toggleAdminPanel() {
-            const panel = document.getElementById('adminPanel');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-                renderKeyList();
-            }
-        }
-
-        function generateKey() {
-            const input = document.getElementById('newKeyInput');
-            const keyText = input.value.trim();
-            if (!keyText) return;
-            
-            let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Mã này đã trùng!');
-
-            currentKeys.push(keyText);
-            localStorage.setItem('shoplink_redirect_v2', JSON.stringify(currentKeys));
-            input.value = '';
-            renderKeyList();
-        }
-
-        function deleteKey(index) {
-            let currentKeys = getStoredKeys();
-            currentKeys.splice(index, 1);
-            localStorage.setItem('shoplink_redirect_v2', JSON.stringify(currentKeys));
-            renderKeyList();
-        }
-
-        function copyKey(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                alert('📋 Đã sao chép: ' + text);
-            }).catch(function() {
-                const tempInput = document.createElement('input');
-                tempInput.value = text;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert('📋 Đã sao chép: ' + text);
-            });
-        }
-
-        function renderKeyList() {
-            const keyListDiv = document.getElementById('keyList');
-            const keys = getStoredKeys();
-            let html = `<strong>Mã Key đã tạo trên máy:</strong>`;
-            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa tạo mã nào.</div>';
-            
-            keys.forEach((key, index) => {
-                html += `
-                    <div class="key-item">
-                        <span>🔑 ${key}</span>
-                        <div class="action-container">
-                            <span class="copy-btn" onclick="copyKey('${key}')">Chép</span>
-                            <span class="delete-btn" onclick="deleteKey(${index})">Xóa</span>
-                        </div>
-                    </div>`;
-            });
-            keyListDiv.innerHTML = html;
-        }
-
-        // KIỂM TRA ĐỐI CHIẾU KEY CỦA NGƯỜI DÙNG
-        function checkKey() {
-            const userInput = document.getElementById('activationKeyInput').value.trim();
-            const validKeys = getStoredKeys();
-
-            if (!userInput) return alert('Vui lòng nhập mã kích hoạt!');
-
-            if (validKeys.includes(userInput)) {
-                // 1. Thay đổi nhãn đỏ thành "THÀNH CÔNG - ĐANG CHUYỂN HƯỚNG" màu xanh lá ngay lập tức
-                const badge = document.getElementById('statusBadge');
-                badge.innerText = "THÀNH CÔNG - ĐANG CHUYỂN HƯỚNG";
-                badge.className = "status-badge success";
-                
-                // 2. Cập nhật dòng mô tả phía dưới
-                document.getElementById('descText').innerHTML = "Hệ thống đang chuyển hướng bạn, vui lòng đợi trong giây lát...";
-                document.getElementById('activationKeyInput').disabled = true;
-
-                // 3. Tự động chuyển hướng sau 2 giây (2000ms)
-                setTimeout(function() {
-                    window.location.href = "https://t.me"; // Bạn hãy sửa link trang đích của bạn tại đây
-                }, 2000);
-
-            } else {
-                alert('❌ Mã kích hoạt không chính xác!');
-            }
-        }
-        
+    <!-- KHU VỰC VÔ HÌNH GÓC DƯỚI BÊN PHẢI GỌI PANEL ADMIN -->
+    
