@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ShopLink & TikTok Management</title>
+    <title>ShopLink & TikTok Management Final</title>
     <style>
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
@@ -85,7 +85,7 @@
 </head>
 <body>
 
-    <!-- 1. MÀN HÌNH KÍCH HOẠT CHÍNH -->
+    <!-- MÀN HÌNH KÍCH HOẠT CHÍNH -->
     <div id="activationPage" class="activation-card">
         <div class="logo">ShopLink</div>
         <div class="inner-box">
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- 2. TRANG TIKTOK SAU KHI NHẬP ĐÚNG KEY -->
+    <!-- TRANG TIKTOK SAU KHI NHẬP ĐÚNG KEY -->
     <div id="tiktokPage" class="tiktok-main-page">
         <div class="tiktok-header">
             <span class="tiktok-title">Link TikTok</span>
@@ -145,7 +145,7 @@
         </div>
     </div>
 
-    <!-- 3. BẢNG TẠO KEY ADMIN -->
+    <!-- BẢNG TẠO KEY ADMIN -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
             <span>🛠️ QUẢN LÝ KEY ADMIN</span>
@@ -159,11 +159,15 @@
     </div>
 
     <script>
-        // ĐỔI TÊN HỆ THỐNG MỚI ĐỂ ÉP ĐỔI BỘ NHỚ ĐỆM
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_v11');
+            const keys = localStorage.getItem('shoplink_final_v12');
             return keys ? JSON.parse(keys) : [];
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Đánh dấu để bạn biết trang web đã nhận code mới hay chưa
+            console.log("Hệ thống v12 đã chạy");
+        });
 
         function closeAdminPanel() {
             document.getElementById('adminPanel').style.display = 'none';
@@ -176,7 +180,4 @@
             if (!keyText) return;
             
             let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Mã này đã trùng!');
-
-            currentKeys.push(keyText);
             
