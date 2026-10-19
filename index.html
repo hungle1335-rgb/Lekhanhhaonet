@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ShopLink Activation</title>
+    <title>ShopLink Activation v2</title>
     <style>
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh;
@@ -25,11 +25,7 @@
         }
         .status-badge.success { color: #00e676; border-color: #00e676; background-color: rgba(0, 230, 118, 0.05); }
         .description { font-size: 13px; color: #8c8a94; line-height: 1.6; margin: 0 0 25px 0; text-align: left; }
-        
-        /* Nhãn nhập liệu và icon chìa khóa bí mật */
         .input-label { font-size: 13px; color: #e2e1e6; text-align: left; margin-bottom: 8px; font-weight: 500; display: flex; align-items: center; }
-        .admin-secret-key { cursor: pointer; margin-right: 6px; padding: 5px; font-size: 16px; -webkit-tap-highlight-color: transparent; }
-        
         .input-group { display: flex; gap: 10px; align-items: center; }
         .key-input { flex: 1; background-color: #0d0d0f; border: 1px solid #2b2a33; border-radius: 6px; padding: 12px; color: #fff; font-size: 13px; outline: none; }
         .key-input:focus { border-color: #ff5252; }
@@ -37,6 +33,12 @@
             background: linear-gradient(135deg, #ff8a00, #e52e71); border: none; border-radius: 6px; color: white;
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
+        
+        /* CHỮ ADMIN GIẤU BÍ MẬT Ở DƯỚI CÙNG */
+        .footer-admin-link {
+            margin-top: 25px; font-size: 11px; color: #333238; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+
         /* ================= KHU VỰC ADMIN ================= */
         .admin-panel {
             display: none; background-color: #1c1a22; border: 1px solid #ff8a00; border-radius: 12px;
@@ -58,10 +60,7 @@
             <p id="descText" class="description">
                 Thiết bị của bạn chưa được cấp quyền truy cập. Bạn có thể kích hoạt nhanh bằng <strong>Mã Key</strong> hoặc gửi ID thiết bị cho Admin.
             </p>
-            <div class="input-label">
-                <!-- Click vào icon chìa khóa này để bật tắt Admin panel -->
-                <span class="admin-secret-key" onclick="toggleAdmin()">🔑</span> Nhập Mã Key Kích Hoạt:
-            </div>
+            <div class="input-label">🔑 Nhập Mã Key Kích Hoạt:</div>
             <div class="input-group">
                 <input type="text" id="activationKeyInput" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
                 <button onclick="checkKey()" class="btn-activate">⚡ Kích Hoạt</button>
@@ -69,32 +68,35 @@
         </div>
     </div>
 
+    <!-- CHỮ ADMIN BÍ MẬT ĐỂ BẤM VÀO -->
+    <div class="footer-admin-link" onclick="toggleAdminPanel()">Powered by ShopLink Admin</div>
+
     <!-- BẢNG TẠO KEY -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
-            <span>🛠️ ADMIN PANEL (BÍ MẬT)</span>
-            <button onclick="toggleAdmin()" style="background:none; border:none; color:#ff4444; font-weight:bold; padding: 5px; font-size: 14px;">Ẩn [X]</button>
+            <span>🛠️ BẢNG TẠO KEY KHÁCH</span>
+            <button onclick="toggleAdminPanel()" style="background:none; border:none; color:#ff4444; font-weight:bold; cursor:pointer;">Ẩn [X]</button>
         </div>
         <div class="input-group">
-            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key muốn tạo...">
-            <button onclick="generateKey()" class="admin-btn">Tạo Key</button>
+            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập chữ mã Key cần tạo...">
+            <button onclick="generateKey()" class="admin-btn">Tạo</button>
         </div>
         <div class="key-list" id="keyList"></div>
     </div>
 
     <script>
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_keys');
+            const keys = localStorage.getItem('shoplink_final_v2');
             return keys ? JSON.parse(keys) : [];
         }
 
-        // Bật hoặc ẩn bảng Admin khi bấm vào icon 🔑
-        function toggleAdmin() {
-            const adminPanel = document.getElementById('adminPanel');
-            if (adminPanel.style.style.display === 'block' || adminPanel.style.display === 'block') {
-                adminPanel.style.display = 'none';
+        // Bấm vào dòng chữ nhỏ dưới cùng để bật/tắt bảng tạo key
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
             } else {
-                adminPanel.style.display = 'block';
+                panel.style.display = 'block';
                 renderKeyList();
             }
         }
@@ -105,10 +107,10 @@
             if (!keyText) return;
             
             let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Key đã tồn tại!');
+            if (currentKeys.includes(keyText)) return alert('Mã này có rồi!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_final_v2', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
         }
@@ -116,14 +118,14 @@
         function deleteKey(index) {
             let currentKeys = getStoredKeys();
             currentKeys.splice(index, 1);
-            localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_final_v2', JSON.stringify(currentKeys));
             renderKeyList();
         }
 
         function renderKeyList() {
             const keyListDiv = document.getElementById('keyList');
             const keys = getStoredKeys();
-            let html = `<strong>Danh sách Key đã tạo trên máy:</strong>`;
+            let html = `<strong>Mã Key đã tạo trên máy này:</strong>`;
             if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa tạo mã nào.</div>';
             keys.forEach((key, index) => {
                 html += `<div class="key-item"><span>🔑 ${key}</span><span class="delete-btn" onclick="deleteKey(${index})">Xóa</span></div>`;
