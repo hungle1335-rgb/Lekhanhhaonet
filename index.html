@@ -2,10 +2,9 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShopLink Activation</title>
     <style>
-        /* Toàn màn hình với nền tối chuyển màu dịu */
         body {
             margin: 0;
             padding: 0;
@@ -21,7 +20,6 @@
             box-sizing: border-box;
         }
 
-        /* Hộp thoại trung tâm */
         .activation-card {
             background-color: #16151a;
             border: 1px solid #232228;
@@ -34,7 +32,7 @@
             box-sizing: border-box;
         }
 
-        /* Logo ShopLink (Bấm giữ/chạm vào đây để mở Admin) */
+        /* Logo ShopLink - Nhấn giữ để kích hoạt */
         .logo {
             font-size: 28px;
             font-weight: bold;
@@ -43,12 +41,14 @@
             background: linear-gradient(to right, #ffffff 50%, #ff5252 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            user-select: none; /* Tránh bị bôi đen văn bản khi chạm nhiều lần */
+            
+            /* Ngăn điện thoại hiện menu copy/paste khi nhấn giữ */
+            user-select: none; 
             -webkit-user-select: none;
+            -webkit-touch-callout: none; 
             cursor: pointer;
         }
 
-        /* Vùng chứa nội dung bên trong */
         .inner-box {
             border: 1px solid #252024;
             background-color: #111013;
@@ -56,7 +56,6 @@
             padding: 24px 20px;
         }
 
-        /* Nhãn CHƯA CẤP PHÉP / ĐÃ KÍCH HOẠT */
         .status-badge {
             display: inline-block;
             color: #ff4444;
@@ -76,7 +75,6 @@
             background-color: rgba(0, 230, 118, 0.05);
         }
 
-        /* Đoạn văn bản mô tả ngắn */
         .description {
             font-size: 13px;
             color: #8c8a94;
@@ -85,7 +83,6 @@
             text-align: left;
         }
 
-        /* Tiêu đề vùng nhập Key */
         .input-label {
             font-size: 13px;
             color: #e2e1e6;
@@ -100,14 +97,12 @@
             margin-right: 6px;
         }
 
-        /* Hàng chứa ô nhập và nút bấm */
         .input-group {
             display: flex;
             gap: 10px;
             align-items: center;
         }
 
-        /* Ô nhập Key */
         .key-input {
             flex: 1;
             background-color: #0d0d0f;
@@ -117,14 +112,12 @@
             color: #fff;
             font-size: 13px;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         .key-input:focus {
             border-color: #ff5252;
         }
 
-        /* Nút Kích Hoạt */
         .btn-activate {
             background: linear-gradient(135deg, #ff8a00, #e52e71);
             border: none;
@@ -140,9 +133,9 @@
             white-space: nowrap;
         }
 
-        /* ================= VÙNG DÀNH CHO ADMIN CẢM ỨNG ================= */
+        /* ================= KHU VỰC ADMIN ================= */
         .admin-panel {
-            display: none; /* Ẩn mặc định */
+            display: none; 
             background-color: #1c1a22;
             border: 1px solid #ff8a00;
             border-radius: 12px;
@@ -198,10 +191,9 @@
 </head>
 <body>
 
-    <!-- GIAO DIỆN NGƯỜI DÙNG -->
     <div class="activation-card">
-        <!-- Thêm sự kiện onclick kích hoạt admin bí mật -->
-        <div class="logo" onclick="handleLogoClick()">ShopLink</div>
+        <!-- Đã gán bộ bắt sự kiện chạm giữ (Touch) dành riêng cho điện thoại -->
+        <div class="logo" id="logoAdminTrigger">ShopLink</div>
         
         <div class="inner-box">
             <div id="statusBadge" class="status-badge">CHƯA CẤP PHÉP</div>
@@ -223,43 +215,48 @@
         </div>
     </div>
 
-    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT TRÊN ĐIỆN THOẠI -->
+    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
-            <span>🛠️ ADMIN PANEL</span>
-            <span style="font-size: 11px; color:#8c8a94">Chạm 5 lần logo để ẩn</span>
+            <span>🛠 ?? ADMIN PANEL</span>
+            <span style="font-size: 11px; color:#8c8a94">Nhấn giữ logo để ẩn</span>
         </div>
         <div class="input-group">
             <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key cần tạo...">
             <button onclick="generateKey()" class="admin-btn">Tạo</button>
         </div>
-        <div class="key-list" id="keyList">
-            <!-- Danh sách Key tự động hiển thị ở đây -->
-        </div>
+        <div class="key-list" id="keyList"></div>
     </div>
 
     <script>
-        // --- 1. MẸO CHẠM BÍ MẬT TRÊN ĐIỆN THOẠI ---
-        let clickCount = 0;
-        let lastClickTime = 0;
+        // --- XỬ LÝ NHẤN GIỮ (LONG PRESS) TRÊN ĐIỆN THOẠI ---
+        const logoTrigger = document.getElementById('logoAdminTrigger');
+        let touchTimeout;
 
-        function handleLogoClick() {
-            const currentTime = new Date().getTime();
-            
-            // Nếu khoảng cách giữa 2 lần bấm quá 1 giây thì reset đếm lại từ đầu
-            if (currentTime - lastClickTime > 1000) {
-                clickCount = 0;
-            }
-            
-            clickCount++;
-            lastClickTime = currentTime;
+        // Bắt đầu chạm ngón tay vào
+        logoTrigger.addEventListener('touchstart', function(e) {
+            touchTimeout = setTimeout(function() {
+                toggleAdminPanel(); // Kích hoạt sau khi giữ đủ 2 giây (2000ms)
+            }, 2000); 
+        });
 
-            // Khi chạm liên tục đủ 5 lần vào chữ "ShopLink"
-            if (clickCount === 5) {
-                clickCount = 0; // reset
-                toggleAdminPanel();
-            }
-        }
+        // Nếu nhấc tay ra trước 2 giây thì hủy lệnh
+        logoTrigger.addEventListener('touchend', function() {
+            clearTimeout(touchTimeout);
+        });
+
+        // Nếu di chuyển ngón tay (cuộn trang) cũng hủy lệnh
+        logoTrigger.addEventListener('touchmove', function() {
+            clearTimeout(touchTimeout);
+        });
+
+        // Hỗ trợ thêm cả chuột máy tính nếu bạn test trên giả lập
+        logoTrigger.addEventListener('mousedown', function() {
+            touchTimeout = setTimeout(toggleAdminPanel, 2000);
+        });
+        logoTrigger.addEventListener('mouseup', function() {
+            clearTimeout(touchTimeout);
+        });
 
         function toggleAdminPanel() {
             const adminPanel = document.getElementById('adminPanel');
@@ -271,38 +268,31 @@
             }
         }
 
-        // --- 2. QUẢN LÝ LƯU TRỮ KEY TRÊN TRÌNH DUYỆT ĐIỆN THOẠI ---
+        // --- CÁC HÀM XỬ LÝ LOGIC ---
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_mobile_keys');
+            const keys = localStorage.getItem('shoplink_press_keys');
             return keys ? JSON.parse(keys) : [];
         }
 
         function generateKey() {
             const input = document.getElementById('newKeyInput');
             const keyText = input.value.trim();
+            if (!keyText) return alert('Hãy nhập ký tự!');
             
-            if (!keyText) {
-                alert('Hãy nhập ký tự cho Key!');
-                return;
-            }
-
             let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) {
-                alert('Mã Key này đã được tạo trước đó!');
-                return;
-            }
+            if (currentKeys.includes(keyText)) return alert('Key đã tồn tại!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_mobile_keys', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_press_keys', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
         }
 
         function deleteKey(index) {
-            if(confirm("Bạn muốn xóa Key này chứ?")) {
+            if(confirm("Xóa Key này?")) {
                 let currentKeys = getStoredKeys();
                 currentKeys.splice(index, 1);
-                localStorage.setItem('shoplink_mobile_keys', JSON.stringify(currentKeys));
+                localStorage.setItem('shoplink_press_keys', JSON.stringify(currentKeys));
                 renderKeyList();
             }
         }
@@ -310,6 +300,11 @@
         function renderKeyList() {
             const keyListDiv = document.getElementById('keyList');
             const keys = getStoredKeys();
+            let html = `<strong>Danh sách Key đã tạo (${keys.length}):</strong>`;
+            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa tạo mã nào.</div>';
             
-            let html = `<strong>Danh sách Key trên máy (${keys.length}):</strong>`;
-        
+            keys.forEach((key, index) => {
+                html += `
+                    <div class="key-item">
+                        <span>🔑 ${key}</span>
+    
