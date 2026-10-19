@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ShopLink Activation v2</title>
+    <title>ShopLink Activation v3</title>
     <style>
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh;
@@ -34,9 +34,15 @@
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
         
-        /* CHỮ ADMIN GIẤU BÍ MẬT Ở DƯỚI CÙNG */
-        .footer-admin-link {
-            margin-top: 25px; font-size: 11px; color: #333238; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+        /* KHU VỰC KÍCH HOẠT VÔ HÌNH (ẨN HOÀN TOÀN) */
+        .secret-invisible-box {
+            margin-top: 25px;
+            width: 150px;
+            height: 40px;
+            background: transparent; /* Hoàn toàn suốt không màu */
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Tắt vệt sáng màu xanh của điện thoại khi bấm */
         }
 
         /* ================= KHU VỰC ADMIN ================= */
@@ -53,6 +59,7 @@
 </head>
 <body>
 
+    <!-- GIAO DIỆN CHÍNH -->
     <div class="activation-card">
         <div class="logo">ShopLink</div>
         <div class="inner-box">
@@ -68,8 +75,8 @@
         </div>
     </div>
 
-    <!-- CHỮ ADMIN BÍ MẬT ĐỂ BẤM VÀO -->
-    <div class="footer-admin-link" onclick="toggleAdminPanel()">Powered by ShopLink Admin</div>
+    <!-- KHU VỰC VÔ HÌNH (NẰM NGAY DƯỚI HỘP THOẠI, KHÔNG HIỆN CHỮ NÀO HẾT) -->
+    <div class="secret-invisible-box" onclick="toggleAdminPanel()"></div>
 
     <!-- BẢNG TẠO KEY -->
     <div id="adminPanel" class="admin-panel">
@@ -78,7 +85,7 @@
             <button onclick="toggleAdminPanel()" style="background:none; border:none; color:#ff4444; font-weight:bold; cursor:pointer;">Ẩn [X]</button>
         </div>
         <div class="input-group">
-            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập chữ mã Key cần tạo...">
+            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập mã Key cần tạo...">
             <button onclick="generateKey()" class="admin-btn">Tạo</button>
         </div>
         <div class="key-list" id="keyList"></div>
@@ -86,11 +93,11 @@
 
     <script>
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_v2');
+            const keys = localStorage.getItem('shoplink_final_v3');
             return keys ? JSON.parse(keys) : [];
         }
 
-        // Bấm vào dòng chữ nhỏ dưới cùng để bật/tắt bảng tạo key
+        // Bật hoặc ẩn bảng Admin
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             if (panel.style.display === 'block') {
@@ -107,10 +114,10 @@
             if (!keyText) return;
             
             let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Mã này có rồi!');
+            if (currentKeys.includes(keyText)) return alert('Mã này đã trùng!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_final_v2', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_final_v3', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
         }
@@ -118,14 +125,14 @@
         function deleteKey(index) {
             let currentKeys = getStoredKeys();
             currentKeys.splice(index, 1);
-            localStorage.setItem('shoplink_final_v2', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_final_v3', JSON.stringify(currentKeys));
             renderKeyList();
         }
 
         function renderKeyList() {
             const keyListDiv = document.getElementById('keyList');
             const keys = getStoredKeys();
-            let html = `<strong>Mã Key đã tạo trên máy này:</strong>`;
+            let html = `<strong>Mã Key đã tạo trên máy:</strong>`;
             if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa tạo mã nào.</div>';
             keys.forEach((key, index) => {
                 html += `<div class="key-item"><span>🔑 ${key}</span><span class="delete-btn" onclick="deleteKey(${index})">Xóa</span></div>`;
