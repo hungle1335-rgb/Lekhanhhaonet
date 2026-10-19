@@ -18,6 +18,20 @@
             color: #fff;
             padding: 20px;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        /* NÚT ADMIN VÔ HÌNH: Đặt ở góc trên cùng bên trái màn hình */
+        .secret-admin-trigger {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background: transparent; /* Hoàn toàn trong suốt */
+            z-index: 9999;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Ẩn vệt màu xanh khi chạm trên điện thoại */
         }
 
         .activation-card {
@@ -32,7 +46,6 @@
             box-sizing: border-box;
         }
 
-        /* Logo ShopLink - Nhấn giữ để kích hoạt */
         .logo {
             font-size: 28px;
             font-weight: bold;
@@ -41,12 +54,8 @@
             background: linear-gradient(to right, #ffffff 50%, #ff5252 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            
-            /* Ngăn điện thoại hiện menu copy/paste khi nhấn giữ */
-            user-select: none; 
+            user-select: none;
             -webkit-user-select: none;
-            -webkit-touch-callout: none; 
-            cursor: pointer;
         }
 
         .inner-box {
@@ -191,9 +200,11 @@
 </head>
 <body>
 
+    <!-- KHU VỰC CẢM ỨNG BÍ MẬT (ẨN HOÀN TOÀN) -->
+    <div class="secret-admin-trigger" id="secretTrigger"></div>
+
     <div class="activation-card">
-        <!-- Đã gán bộ bắt sự kiện chạm giữ (Touch) dành riêng cho điện thoại -->
-        <div class="logo" id="logoAdminTrigger">ShopLink</div>
+        <div class="logo">ShopLink</div>
         
         <div class="inner-box">
             <div id="statusBadge" class="status-badge">CHƯA CẤP PHÉP</div>
@@ -215,11 +226,11 @@
         </div>
     </div>
 
-    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT -->
+    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT CỦA ADMIN -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
-            <span>🛠 ?? ADMIN PANEL</span>
-            <span style="font-size: 11px; color:#8c8a94">Nhấn giữ logo để ẩn</span>
+            <span>🛠️ ADMIN PANEL</span>
+            <span style="font-size: 11px; color:#8c8a94">Chạm tiếp 5 lần góc trái để ẩn</span>
         </div>
         <div class="input-group">
             <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key cần tạo...">
@@ -229,33 +240,23 @@
     </div>
 
     <script>
-        // --- XỬ LÝ NHẤN GIỮ (LONG PRESS) TRÊN ĐIỆN THOẠI ---
-        const logoTrigger = document.getElementById('logoAdminTrigger');
-        let touchTimeout;
+        // --- XỬ LÝ CHẠM 5 LẦN VÀO GÓC TRÁI MÀN HÌNH ---
+        let count = 0;
+        let lastClick = 0;
+        const trigger = document.getElementById('secretTrigger');
 
-        // Bắt đầu chạm ngón tay vào
-        logoTrigger.addEventListener('touchstart', function(e) {
-            touchTimeout = setTimeout(function() {
-                toggleAdminPanel(); // Kích hoạt sau khi giữ đủ 2 giây (2000ms)
-            }, 2000); 
-        });
+        trigger.addEventListener('click', function(e) {
+            const now = new Date().getTime();
+            if (now - lastClick > 1500) {
+                count = 0; // Quá 1.5 giây không bấm tiếp thì reset
+            }
+            count++;
+            lastClick = now;
 
-        // Nếu nhấc tay ra trước 2 giây thì hủy lệnh
-        logoTrigger.addEventListener('touchend', function() {
-            clearTimeout(touchTimeout);
-        });
-
-        // Nếu di chuyển ngón tay (cuộn trang) cũng hủy lệnh
-        logoTrigger.addEventListener('touchmove', function() {
-            clearTimeout(touchTimeout);
-        });
-
-        // Hỗ trợ thêm cả chuột máy tính nếu bạn test trên giả lập
-        logoTrigger.addEventListener('mousedown', function() {
-            touchTimeout = setTimeout(toggleAdminPanel, 2000);
-        });
-        logoTrigger.addEventListener('mouseup', function() {
-            clearTimeout(touchTimeout);
+            if (count === 5) {
+                count = 0;
+                toggleAdminPanel();
+            }
         });
 
         function toggleAdminPanel() {
@@ -268,9 +269,9 @@
             }
         }
 
-        // --- CÁC HÀM XỬ LÝ LOGIC ---
+        // --- CÁC HÀM QUẢN LÝ KEY ---
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_press_keys');
+            const keys = localStorage.getItem('shoplink_final_keys');
             return keys ? JSON.parse(keys) : [];
         }
 
@@ -283,7 +284,7 @@
             if (currentKeys.includes(keyText)) return alert('Key đã tồn tại!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_press_keys', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
         }
@@ -292,7 +293,7 @@
             if(confirm("Xóa Key này?")) {
                 let currentKeys = getStoredKeys();
                 currentKeys.splice(index, 1);
-                localStorage.setItem('shoplink_press_keys', JSON.stringify(currentKeys));
+                localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
                 renderKeyList();
             }
         }
@@ -307,4 +308,11 @@
                 html += `
                     <div class="key-item">
                         <span>🔑 ${key}</span>
-    
+                        <span class="delete-btn" onclick="deleteKey(${index})">Xóa</span>
+                    </div>
+                `;
+            });
+            keyListDiv.innerHTML = html;
+        }
+
+        
