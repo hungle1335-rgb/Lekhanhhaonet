@@ -18,20 +18,6 @@
             color: #fff;
             padding: 20px;
             box-sizing: border-box;
-            position: relative;
-        }
-
-        /* NÚT ADMIN VÔ HÌNH: Đặt ở góc trên cùng bên trái màn hình */
-        .secret-admin-trigger {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 60px;
-            height: 60px;
-            background: transparent; /* Hoàn toàn trong suốt */
-            z-index: 9999;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent; /* Ẩn vệt màu xanh khi chạm trên điện thoại */
         }
 
         .activation-card {
@@ -54,8 +40,6 @@
             background: linear-gradient(to right, #ffffff 50%, #ff5252 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         .inner-box {
@@ -101,10 +85,6 @@
             display: flex;
             align-items: center;
         }
-        
-        .input-label span {
-            margin-right: 6px;
-        }
 
         .input-group {
             display: flex;
@@ -136,9 +116,6 @@
             font-weight: bold;
             padding: 12px 18px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             white-space: nowrap;
         }
 
@@ -195,13 +172,11 @@
             color: #ff4444;
             padding: 5px;
             font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-
-    <!-- KHU VỰC CẢM ỨNG BÍ MẬT (ẨN HOÀN TOÀN) -->
-    <div class="secret-admin-trigger" id="secretTrigger"></div>
 
     <div class="activation-card">
         <div class="logo">ShopLink</div>
@@ -218,6 +193,7 @@
             </div>
             
             <div class="input-group">
+                <!-- Người dùng hoặc bạn sẽ nhập vào đây -->
                 <input type="text" id="activationKeyInput" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
                 <button onclick="checkKey()" class="btn-activate">
                     ⚡ Kích Hoạt
@@ -226,83 +202,61 @@
         </div>
     </div>
 
-    <!-- BẢNG ĐIỀU KHIỂN BÍ MẬT CỦA ADMIN -->
+    <!-- BẢNG ĐIỀU KHIỂN ADMIN (CHỈ HIỆN KHI NHẬP ĐÚNG MẬT KHẨU) -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
-            <span>🛠️ ADMIN PANEL</span>
-            <span style="font-size: 11px; color:#8c8a94">Chạm tiếp 5 lần góc trái để ẩn</span>
+            <span>🛠️ KHU VỰC TẠO KEY (ADMIN)</span>
+            <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-weight:bold;">Đóng [X]</button>
         </div>
         <div class="input-group">
-            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key cần tạo...">
-            <button onclick="generateKey()" class="admin-btn">Tạo</button>
+            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập mã Key mới cần tạo...">
+            <button onclick="generateKey()" class="admin-btn">Tạo Key</button>
         </div>
         <div class="key-list" id="keyList"></div>
     </div>
 
     <script>
-        // --- XỬ LÝ CHẠM 5 LẦN VÀO GÓC TRÁI MÀN HÌNH ---
-        let count = 0;
-        let lastClick = 0;
-        const trigger = document.getElementById('secretTrigger');
+        // MẬT KHẨU ADMIN CỦA BẠN (Bạn có thể đổi chữ 'admin123' này thành mã bất kỳ bạn thích)
+        const ADMIN_PASSWORD = "admin123";
 
-        trigger.addEventListener('click', function(e) {
-            const now = new Date().getTime();
-            if (now - lastClick > 1500) {
-                count = 0; // Quá 1.5 giây không bấm tiếp thì reset
-            }
-            count++;
-            lastClick = now;
-
-            if (count === 5) {
-                count = 0;
-                toggleAdminPanel();
-            }
-        });
-
-        function toggleAdminPanel() {
-            const adminPanel = document.getElementById('adminPanel');
-            if (adminPanel.style.display === 'block') {
-                adminPanel.style.display = 'none';
-            } else {
-                adminPanel.style.display = 'block';
-                renderKeyList();
-            }
-        }
-
-        // --- CÁC HÀM QUẢN LÝ KEY ---
+        // Lấy danh sách key đã lưu
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_keys');
+            const keys = localStorage.getItem('shoplink_password_keys');
             return keys ? JSON.parse(keys) : [];
         }
 
+        // Tạo Key mới
         function generateKey() {
             const input = document.getElementById('newKeyInput');
             const keyText = input.value.trim();
-            if (!keyText) return alert('Hãy nhập ký tự!');
+            if (!keyText) return alert('Vui lòng điền ký tự cho Key!');
             
             let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Key đã tồn tại!');
+            if (currentKeys.includes(keyText)) return alert('Key này đã có trên hệ thống!');
 
             currentKeys.push(keyText);
-            localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
+            localStorage.setItem('shoplink_password_keys', JSON.stringify(currentKeys));
             input.value = '';
             renderKeyList();
+            alert('Đã tạo Key thành công!');
         }
 
+        // Xóa Key
         function deleteKey(index) {
-            if(confirm("Xóa Key này?")) {
+            if(confirm("Bạn có chắc chắn muốn xóa Key này không?")) {
                 let currentKeys = getStoredKeys();
                 currentKeys.splice(index, 1);
-                localStorage.setItem('shoplink_final_keys', JSON.stringify(currentKeys));
+                localStorage.setItem('shoplink_password_keys', JSON.stringify(currentKeys));
                 renderKeyList();
             }
         }
 
+        // Hiển thị danh sách Key
         function renderKeyList() {
             const keyListDiv = document.getElementById('keyList');
             const keys = getStoredKeys();
-            let html = `<strong>Danh sách Key đã tạo (${keys.length}):</strong>`;
-            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa tạo mã nào.</div>';
+            let html = `<strong>Danh sách mã Key đang có trên máy:</strong>`;
+            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa có mã nào được tạo.</div>';
             
             keys.forEach((key, index) => {
                 html += `
@@ -315,4 +269,31 @@
             keyListDiv.innerHTML = html;
         }
 
+        // Đóng bảng điều khiển admin
+        function closeAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('activationKeyInput').value = '';
+        }
+
+        // NÚT KÍCH HOẠT CHÍNH (Xử lý cả nhập key của khách và mật khẩu của Admin)
+        function checkKey() {
+            const userInput = document.getElementById('activationKeyInput').value.trim();
+            const validKeys = getStoredKeys();
+
+            if (!userInput) {
+                alert('Vui lòng nhập mã!');
+                return;
+            }
+
+            // 1. NẾU BẠN NHẬP ĐÚNG MẬT KHẨU ADMIN: Mở bảng tạo Key
+            if (userInput === ADMIN_PASSWORD) {
+                document.getElementById('adminPanel').style.display = 'block';
+                renderKeyList();
+                return;
+            }
+
+            // 2. NẾU KHÁCH NHẬP ĐÚNG KEY BẠN ĐÃ TẠO: Kích hoạt ứng dụng
+            if (validKeys.includes(userInput)) {
+                document.getElementById('statusBadge').innerText = "ĐÃ KÍCH HOẠT";
+                document.getElementById('statusBadge').className = "status-badge success";
         
