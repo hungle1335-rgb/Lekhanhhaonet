@@ -6,294 +6,146 @@
     <title>ShopLink Activation</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh;
             background: radial-gradient(circle at 80% 20%, #201314 0%, #0d0d11 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-            padding: 20px;
-            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; padding: 20px; box-sizing: border-box;
         }
-
         .activation-card {
-            background-color: #16151a;
-            border: 1px solid #232228;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 440px;
-            padding: 35px 25px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            box-sizing: border-box;
+            background-color: #16151a; border: 1px solid #232228; border-radius: 16px; width: 100%; max-width: 440px; padding: 35px 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box;
         }
-
         .logo {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin-bottom: 25px;
-            background: linear-gradient(to right, #ffffff 50%, #ff5252 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 28px; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 25px;
+            background: linear-gradient(to right, #ffffff 50%, #ff5252 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .inner-box {
-            border: 1px solid #252024;
-            background-color: #111013;
-            border-radius: 12px;
-            padding: 24px 20px;
-        }
-
+        .inner-box { border: 1px solid #252024; background-color: #111013; border-radius: 12px; padding: 24px 20px; }
         .status-badge {
-            display: inline-block;
-            color: #ff4444;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border: 1px dashed #ff4444;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 18px;
-            background-color: rgba(255, 68, 68, 0.05);
+            display: inline-block; color: #ff4444; font-size: 11px; font-weight: bold; letter-spacing: 1px;
+            border: 1px dashed #ff4444; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; background-color: rgba(255, 68, 68, 0.05);
         }
-        
-        .status-badge.success {
-            color: #00e676;
-            border-color: #00e676;
-            background-color: rgba(0, 230, 118, 0.05);
-        }
-
-        .description {
-            font-size: 13px;
-            color: #8c8a94;
-            line-height: 1.6;
-            margin: 0 0 25px 0;
-            text-align: left;
-        }
-
-        .input-label {
-            font-size: 13px;
-            color: #e2e1e6;
-            text-align: left;
-            margin-bottom: 8px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .key-input {
-            flex: 1;
-            background-color: #0d0d0f;
-            border: 1px solid #2b2a33;
-            border-radius: 6px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .key-input:focus {
-            border-color: #ff5252;
-        }
-
+        .status-badge.success { color: #00e676; border-color: #00e676; background-color: rgba(0, 230, 118, 0.05); }
+        .description { font-size: 13px; color: #8c8a94; line-height: 1.6; margin: 0 0 25px 0; text-align: left; }
+        .input-label { font-size: 13px; color: #e2e1e6; text-align: left; margin-bottom: 8px; font-weight: 500; display: flex; align-items: center; }
+        .input-group { display: flex; gap: 10px; align-items: center; }
+        .key-input { flex: 1; background-color: #0d0d0f; border: 1px solid #2b2a33; border-radius: 6px; padding: 12px; color: #fff; font-size: 13px; outline: none; }
+        .key-input:focus { border-color: #ff5252; }
         .btn-activate {
-            background: linear-gradient(135deg, #ff8a00, #e52e71);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 12px 18px;
-            cursor: pointer;
-            white-space: nowrap;
+            background: linear-gradient(135deg, #ff8a00, #e52e71); border: none; border-radius: 6px; color: white;
+            font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
-
         /* ================= KHU VỰC ADMIN ================= */
         .admin-panel {
-            display: none; 
-            background-color: #1c1a22;
-            border: 1px solid #ff8a00;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 440px;
-            margin-top: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            box-sizing: border-box;
+            display: none; background-color: #1c1a22; border: 1px solid #ff8a00; border-radius: 12px;
+            width: 100%; max-width: 440px; margin-top: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
         }
-        .admin-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #ff8a00;
-            margin-bottom: 15px;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-        }
-        .admin-btn {
-            background-color: #ff8a00;
-            border: none;
-            color: #000;
-            font-weight: bold;
-            padding: 12px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .key-list {
-            margin-top: 15px;
-            text-align: left;
-            font-size: 13px;
-            max-height: 120px;
-            overflow-y: auto;
-            background: #0d0d0f;
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .key-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #222;
-            align-items: center;
-        }
-        .delete-btn {
-            color: #ff4444;
-            padding: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .admin-title { font-size: 14px; font-weight: bold; color: #ff8a00; margin-bottom: 15px; text-align: left; display: flex; justify-content: space-between; }
+        .admin-btn { background-color: #ff8a00; border: none; color: #000; font-weight: bold; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .key-list { margin-top: 15px; text-align: left; font-size: 13px; max-height: 120px; overflow-y: auto; background: #0d0d0f; padding: 10px; border-radius: 6px; }
+        .key-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; align-items: center; }
+        .delete-btn { color: #ff4444; padding: 5px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="activation-card">
         <div class="logo">ShopLink</div>
-        
         <div class="inner-box">
             <div id="statusBadge" class="status-badge">CHƯA CẤP PHÉP</div>
-            
             <p id="descText" class="description">
                 Thiết bị của bạn chưa được cấp quyền truy cập. Bạn có thể kích hoạt nhanh bằng <strong>Mã Key</strong> hoặc gửi ID thiết bị cho Admin.
             </p>
-            
-            <div class="input-label">
-                <span>🔑</span> Nhập Mã Key Kích Hoạt:
-            </div>
-            
+            <div class="input-label"><span>🔑</span> Nhập Mã Key Kích Hoạt:</div>
             <div class="input-group">
-                <!-- Người dùng hoặc bạn sẽ nhập vào đây -->
-                <input type="text" id="activationKeyInput" class="key-input" placeholder="VD: VIP-8A2B-X7K1-9M4P">
-                <button onclick="checkKey()" class="btn-activate">
-                    ⚡ Kích Hoạt
-                </button>
+                <!-- Thêm sự kiện oninput để bắt chữ khi bạn gõ trên điện thoại -->
+                <input type="text" id="activationKeyInput" class="key-input" oninput="autoCheckAdmin()" placeholder="VD: VIP-8A2B-X7K1-9M4P">
+                <button onclick="checkKey()" class="btn-activate">⚡ Kích Hoạt</button>
             </div>
         </div>
     </div>
 
-    <!-- BẢNG ĐIỀU KHIỂN ADMIN (CHỈ HIỆN KHI NHẬP ĐÚNG MẬT KHẨU) -->
+    <!-- BẢNG TẠO KEY -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
-            <span>🛠️ KHU VỰC TẠO KEY (ADMIN)</span>
-            <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-weight:bold;">Đóng [X]</button>
+            <span>🛠️ ADMIN PANEL</span>
+            <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4444; font-weight:bold;">Xóa chữ để ẩn [X]</button>
         </div>
         <div class="input-group">
-            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập mã Key mới cần tạo...">
-            <button onclick="generateKey()" class="admin-btn">Tạo Key</button>
+            <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập Key muốn tạo...">
+            <button onclick="generateKey()" class="admin-btn">Tạo</button>
         </div>
         <div class="key-list" id="keyList"></div>
     </div>
 
     <script>
-        // MẬT KHẨU ADMIN CỦA BẠN (Bạn có thể đổi chữ 'admin123' này thành mã bất kỳ bạn thích)
-        const ADMIN_PASSWORD = "admin123";
+        // MẬT KHẨU ADMIN CỦA BẠN (Bạn thích đổi thành chữ gì ngắn hơn thì sửa ở đây nhé)
+        const ADMIN_PASSWORD = "admin";
 
-        // Lấy danh sách key đã lưu
         function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_password_keys');
+            const keys = localStorage.getItem('shoplink_keys');
             return keys ? JSON.parse(keys) : [];
         }
 
-        // Tạo Key mới
-        function generateKey() {
-            const input = document.getElementById('newKeyInput');
-            const keyText = input.value.trim();
-            if (!keyText) return alert('Vui lòng điền ký tự cho Key!');
-            
-            let currentKeys = getStoredKeys();
-            if (currentKeys.includes(keyText)) return alert('Key này đã có trên hệ thống!');
-
-            currentKeys.push(keyText);
-            localStorage.setItem('shoplink_password_keys', JSON.stringify(currentKeys));
-            input.value = '';
-            renderKeyList();
-            alert('Đã tạo Key thành công!');
-        }
-
-        // Xóa Key
-        function deleteKey(index) {
-            if(confirm("Bạn có chắc chắn muốn xóa Key này không?")) {
-                let currentKeys = getStoredKeys();
-                currentKeys.splice(index, 1);
-                localStorage.setItem('shoplink_password_keys', JSON.stringify(currentKeys));
+        // Tự động nhận diện mở bảng Admin ngay khi đang gõ chữ
+        function autoCheckAdmin() {
+            const val = document.getElementById('activationKeyInput').value.trim();
+            if (val === ADMIN_PASSWORD) {
+                document.getElementById('adminPanel').style.display = 'block';
                 renderKeyList();
             }
         }
 
-        // Hiển thị danh sách Key
+        function generateKey() {
+            const input = document.getElementById('newKeyInput');
+            const keyText = input.value.trim();
+            if (!keyText) return;
+            
+            let currentKeys = getStoredKeys();
+            if (currentKeys.includes(keyText)) return alert('Key đã có rồi!');
+
+            currentKeys.push(keyText);
+            localStorage.setItem('shoplink_keys', JSON.stringify(currentKeys));
+            input.value = '';
+            renderKeyList();
+        }
+
+        function deleteKey(index) {
+            let currentKeys = getStoredKeys();
+            currentKeys.splice(index, 1);
+            localStorage.setItem('shoplink_keys', JSON.stringify(currentKeys));
+            renderKeyList();
+        }
+
         function renderKeyList() {
             const keyListDiv = document.getElementById('keyList');
             const keys = getStoredKeys();
-            let html = `<strong>Danh sách mã Key đang có trên máy:</strong>`;
-            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa có mã nào được tạo.</div>';
-            
+            let html = `<strong>Danh sách Key đã tạo:</strong>`;
+            if(keys.length === 0) html += '<div style="color:#666; margin-top:5px;">Chưa có key nào.</div>';
             keys.forEach((key, index) => {
-                html += `
-                    <div class="key-item">
-                        <span>🔑 ${key}</span>
-                        <span class="delete-btn" onclick="deleteKey(${index})">Xóa</span>
-                    </div>
-                `;
+                html += `<div class="key-item"><span>🔑 ${key}</span><span class="delete-btn" onclick="deleteKey(${index})">Xóa</span></div>`;
             });
             keyListDiv.innerHTML = html;
         }
 
-        // Đóng bảng điều khiển admin
         function closeAdmin() {
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('activationKeyInput').value = '';
         }
 
-        // NÚT KÍCH HOẠT CHÍNH (Xử lý cả nhập key của khách và mật khẩu của Admin)
+        // Kiểm tra Key kích hoạt của khách
         function checkKey() {
             const userInput = document.getElementById('activationKeyInput').value.trim();
             const validKeys = getStoredKeys();
 
-            if (!userInput) {
-                alert('Vui lòng nhập mã!');
-                return;
-            }
-
-            // 1. NẾU BẠN NHẬP ĐÚNG MẬT KHẨU ADMIN: Mở bảng tạo Key
-            if (userInput === ADMIN_PASSWORD) {
-                document.getElementById('adminPanel').style.display = 'block';
-                renderKeyList();
-                return;
-            }
-
-            // 2. NẾU KHÁCH NHẬP ĐÚNG KEY BẠN ĐÃ TẠO: Kích hoạt ứng dụng
             if (validKeys.includes(userInput)) {
                 document.getElementById('statusBadge').innerText = "ĐÃ KÍCH HOẠT";
                 document.getElementById('statusBadge').className = "status-badge success";
-        
+                document.getElementById('descText').innerHTML = "Thiết bị đã được xác thực thành công!";
+                document.getElementById('activationKeyInput').disabled = true;
+                alert('🎉 Kích hoạt thành công!');
+            } else if (userInput !== ADMIN_PASSWORD) {
+                alert('❌ Mã kích hoạt sai!');
+            }
+        }
+    </script>
+</body>
+</html>
