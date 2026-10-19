@@ -12,15 +12,15 @@
             position: relative; overflow-x: hidden; justify-content: center;
         }
         
-        /* KHU VỰC BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI MÀN HÌNH */
+        /* ================= VÙNG BẤM VÔ HÌNH SIÊU RỘNG Ở GÓC DƯỚI BÊN PHẢI ================= */
         .secret-bottom-right-trigger {
             position: fixed; 
-            bottom: 0; 
-            right: 0; 
-            width: 80px; 
-            height: 80px; 
-            background: transparent; 
-            z-index: 9999; 
+            bottom: 30px; /* Đẩy lên cao hơn để tránh thanh điều hướng ảo của điện thoại */
+            right: 20px; 
+            width: 180px; /* Phóng to chiều rộng ra 180px để dễ chạm trúng */
+            height: 150px; /* Phóng to chiều cao lên 150px */
+            background: transparent; /* Hoàn toàn vô hình */
+            z-index: 99999; /* Đặt nổi lên trên cùng cao nhất để không bị cái gì che mất */
             cursor: pointer; 
             -webkit-tap-highlight-color: transparent;
         }
@@ -50,7 +50,7 @@
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
         }
 
-        /* ================= GIAO DIỆN TRANG TIKTOK ================= */
+        /* ================= GIAO DIỆN TRANG TIKTOK MỚI ================= */
         .tiktok-main-page {
             display: none; width: 100%; max-width: 480px; background-color: #111013; 
             border-radius: 16px; border: 1px solid #1c1b22; padding: 15px; box-sizing: border-box;
@@ -85,7 +85,7 @@
         .admin-panel {
             display: none; background-color: #1c1a22; border: 1px solid #ff8a00; border-radius: 12px;
             width: 100%; max-width: 440px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
-            margin-top: 20px; z-index: 9998;
+            margin-top: 20px; z-index: 99998;
         }
         .admin-title { font-size: 14px; font-weight: bold; color: #ff8a00; margin-bottom: 15px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .admin-btn { background-color: #ff8a00; border: none; color: #000; font-weight: bold; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
@@ -98,10 +98,10 @@
 </head>
 <body>
 
-    <!-- THẺ VÙNG BẤM VÔ HÌNH Ở GÓC DƯỚI CÙNG BÊN PHẢI (ĐÃ ĐƯỢC THÊM LẠI ĐẦY ĐỦ) -->
+    <!-- THẺ VÙNG BẤM VÔ HÌNH (Đã được phóng đại siêu to và nâng độ cao chống lỗi chạm) -->
     <div class="secret-bottom-right-trigger" onclick="toggleAdminPanel()"></div>
 
-    <!-- 1. GIAO DIỆN MÀN HÌNH KÍCH HOẠT CHÍNH -->
+    <!-- 1. MÀN HÌNH KÍCH HOẠT CHÍNH -->
     <div id="activationPage" class="activation-card">
         <div class="logo">ShopLink</div>
         <div class="inner-box">
@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <!-- 2. GIAO DIỆN TRANG TIKTOK CHÍNH -->
+    <!-- 2. TRANG TIKTOK SAU KHI NHẬP ĐÚNG KEY -->
     <div id="tiktokPage" class="tiktok-main-page">
         <div class="tiktok-header">
             <span class="tiktok-title">Link TikTok</span>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <!-- 3. BẢNG QUẢN LÝ TẠO KEY ADMIN -->
+    <!-- 3. BẢNG TẠO KEY ADMIN -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
             <span>🛠️ QUẢN LÝ KEY ADMIN</span>
@@ -169,15 +169,4 @@
         </div>
         <div class="input-group">
             <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập mã Key cần tạo...">
-            <button onclick="generateKey()" class="admin-btn">Tạo</button>
-        </div>
-        <div class="key-list" id="keyList"></div>
-    </div>
-
-    <script>
-        function getStoredKeys() {
-            const keys = localStorage.getItem('shoplink_final_v7');
-            return keys ? JSON.parse(keys) : [];
-        }
-
-    
+                    
