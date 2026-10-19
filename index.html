@@ -9,9 +9,10 @@
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
             background: radial-gradient(circle at 80% 20%, #201314 0%, #0d0d11 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; padding: 20px; box-sizing: border-box;
-            position: relative; overflow-x: hidden; justify-content: center;
+            justify-content: center;
         }
 
+        /* ================= GIAO DIỆN MÀN HÌNH KÍCH HOẠT ================= */
         .activation-card {
             background-color: #16151a; border: 1px solid #232228; border-radius: 16px; width: 100%; max-width: 440px; padding: 35px 25px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box;
@@ -34,23 +35,6 @@
         .btn-activate {
             background: linear-gradient(135deg, #ff8a00, #e52e71); border: none; border-radius: 6px; color: white;
             font-size: 13px; font-weight: bold; padding: 12px 18px; cursor: pointer; white-space: nowrap;
-        }
-
-        /* NÚT TÀI KHOẢN ADMIN: Giữ opacity nguyên vẹn nhưng đổi màu trùng màu nền tối ẩn giấu */
-        .secret-bottom-right-trigger {
-            position: fixed; 
-            bottom: 35px; /* Giữ độ cao tránh phím ảo */
-            right: 25px; 
-            padding: 15px 20px;
-            font-size: 12px;
-            color: #121014; /* Màu xám đen cực tối tiệp hẳn vào màu nền nền */
-            background-color: transparent;
-            z-index: 99999;
-            cursor: pointer; 
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            font-weight: bold;
         }
 
         /* ================= GIAO DIỆN TRANG TIKTOK MỚI ================= */
@@ -88,7 +72,7 @@
         .admin-panel {
             display: none; background-color: #1c1a22; border: 1px solid #ff8a00; border-radius: 12px;
             width: 100%; max-width: 440px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
-            margin-top: 20px; z-index: 99998;
+            margin-top: 20px;
         }
         .admin-title { font-size: 14px; font-weight: bold; color: #ff8a00; margin-bottom: 15px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .admin-btn { background-color: #ff8a00; border: none; color: #000; font-weight: bold; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
@@ -101,7 +85,7 @@
 </head>
 <body>
 
-    <!-- MÀN HÌNH KÍCH HOẠT CHÍNH -->
+    <!-- 1. MÀN HÌNH KÍCH HOẠT CHÍNH -->
     <div id="activationPage" class="activation-card">
         <div class="logo">ShopLink</div>
         <div class="inner-box">
@@ -117,7 +101,7 @@
         </div>
     </div>
 
-    <!-- TRANG TIKTOK SAU KHI NHẬP ĐÚNG KEY -->
+    <!-- 2. TRANG TIKTOK SAU KHI NHẬP ĐÚNG KEY -->
     <div id="tiktokPage" class="tiktok-main-page">
         <div class="tiktok-header">
             <span class="tiktok-title">Link TikTok</span>
@@ -161,11 +145,11 @@
         </div>
     </div>
 
-    <!-- BẢNG TẠO KEY ADMIN -->
+    <!-- 3. BẢNG TẠO KEY ADMIN -->
     <div id="adminPanel" class="admin-panel">
         <div class="admin-title">
             <span>🛠️ QUẢN LÝ KEY ADMIN</span>
-            <button onclick="toggleAdminPanel()" style="background:none; border:none; color:#ff4444; font-weight:bold; cursor:pointer; padding: 5px;">Ẩn [X]</button>
+            <button onclick="closeAdminPanel()" style="background:none; border:none; color:#ff4444; font-weight:bold; cursor:pointer; padding: 5px;">Đóng [X]</button>
         </div>
         <div class="input-group">
             <input type="text" id="newKeyInput" class="key-input" style="border-color: #ff8a00;" placeholder="Nhập mã Key cần tạo...">
@@ -174,8 +158,25 @@
         <div class="key-list" id="keyList"></div>
     </div>
 
-    <!-- NÚT BẤM CHỮ TIỆP MÀU NỀN ẨN MÌNH GÓC DƯỚI CÙNG BÊN PHẢI -->
-    <div class="secret-bottom-right-trigger" id="adminTextBtn" onclick="toggleAdminPanel()">[Admin]</div>
-
     <script>
-        
+        // ĐỔI TÊN HỆ THỐNG MỚI ĐỂ ÉP ĐỔI BỘ NHỚ ĐỆM
+        function getStoredKeys() {
+            const keys = localStorage.getItem('shoplink_final_v11');
+            return keys ? JSON.parse(keys) : [];
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('activationKeyInput').value = '';
+        }
+
+        function generateKey() {
+            const input = document.getElementById('newKeyInput');
+            const keyText = input.value.trim();
+            if (!keyText) return;
+            
+            let currentKeys = getStoredKeys();
+            if (currentKeys.includes(keyText)) return alert('Mã này đã trùng!');
+
+            currentKeys.push(keyText);
+            
